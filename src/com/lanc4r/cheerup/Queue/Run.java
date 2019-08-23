@@ -1,6 +1,16 @@
 package com.lanc4r.cheerup.Queue;
 
+import org.junit.Test;
+
 public class Run {
+
+    @Test
+    public void test() {
+        int[] arr = new int[10];
+        for (int num : arr) {
+            System.out.println(num);
+        }
+    }
 
     public static void main(String[] args) {
         testCircularQueue();
@@ -34,6 +44,8 @@ public class Run {
         System.out.println(queue.remove());
         queue.add(13);
         queue.add(14);
+        queue.add(15);
+        queue.add(16);
 
         queue.printQueue();
     }

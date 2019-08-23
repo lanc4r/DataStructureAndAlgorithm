@@ -2,47 +2,51 @@ package com.lanc4r.cheerup.Queue;
 
 /**
  * 数组模拟循环队列，你可以理解为一个环形的队列啦<br>
- * 下面说说两个简单的实现思路<br>
- * 1.通过增加当前队列内数值标记，队列为空 或者 队列已满 两种状态通过这个标记来判断<br>
- * 2.通过队首和队尾指针来判断对 队列为空 或 队列已满的情况
+ * 下面说说实现思路，与关键点:<br>
+ * 1. 首先需要留一个位置不能全部用来存储数据<br>
+ * 2. 还需要一个标记用来存储已存储的数据<br>
+ * 3. 为了能够循环存储，再存储的时候需要计算出存储的位置，不能再是简单的加一了<br>
+ * 4. 判空 和 判满的条件需要根据存储已放数据的个数来决定。
  */
 
-public class CircularQueue {
+public class CircularQueue2 {
 
     // 定义一个数组来存放队列内的数据
     private int queue[];
     // 定义队头和队尾指针 —— 其实就是记录的下标值啦
     private int start;
     private int end;
+    // 定义当前队列已经存储的个数，需要通过这个标记来辅助完成判空和判满的操作
+    private int count;
     // 定义当前数组的长度
     private int len;
 
-    public CircularQueue(int capacity) {
+    public CircularQueue2(int capacity) {
         init(capacity);
     }
 
     private void init(int capacity) {
         queue = new int[capacity];
-        start = end = 0;
+        start = end = count = 0;
         len = queue.length;
     }
 
     /**
      * 判断队列是否已满<br>
      * 
-     * 当队首和队尾指针指向同一处，并且队首指定值不为默认值0
+     * 数组最大容量表示队列已满
      */
     private boolean isFull() {
-        return start == end && queue[start] != 0;
+        return count == len;
     }
 
     /**
      * 判断队列是否为空<br>
      * 
-     * 当队首和队尾指针指向同一处，并且队首指定值为默认值 0
+     * count 为 0 的时候表示队列为空
      */
     private boolean isEmpty() {
-        return start == end && queue[start] == 0;
+        return count == 0;
     }
 
     /**
@@ -59,8 +63,9 @@ public class CircularQueue {
             return;
         }
 
-        queue[end++] = val;
-        end = end % len;
+        queue[end] = val;
+        end = (end + 1) % len;
+        count++;
     }
 
     /**
@@ -78,30 +83,17 @@ public class CircularQueue {
         }
 
         int result = queue[start];
-        // 移除后将指定的值设置为 0
-        queue[start++] = 0;
-        start = start % len;
+        start = (start + 1) % len;
+        count--;
         return result;
     }
 
     // 打印队列数据
     public void printQueue() {
-        if (!isEmpty()) {
-            // 打印区分队列是否已满的情况
-            if (!isFull()) {
-                while (start != end) {
-                    int val = queue[start++];
-                    start = start % len;
-                    System.out.print(val + "  ");
-                }
-            } else {
-                int flag = len;
-                while (flag-- > 0) {
-                    int val = queue[start++];
-                    start = start % len;
-                    System.out.print(val + "  ");
-                }
-            }
+        while (count-- > 0) {
+            int val = queue[start];
+            start = (start + 1) % len;
+            System.out.print(val + "  ");
         }
     }
 }
